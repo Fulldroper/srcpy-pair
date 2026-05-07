@@ -281,10 +281,8 @@
 
     // ── main ────────────────────────────────────────────────────────────────
     async function main() {
-      // peer ID comes from URL: /peerid or ?p=peerid
-      const path = location.pathname.replace(/^\//, '').replace(/\/$/, '')
-      const segments = path.split('/')
-      const hostPeerId = segments[segments.length - 1] ||
+      // peer ID comes from hash: https://site.com#peerid
+      const hostPeerId = location.hash.replace(/^#/, '') ||
                          new URLSearchParams(location.search).get('p')
 
       if (!hostPeerId) {
