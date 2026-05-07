@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Srcpy Pair</title>
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --border: #2a2d3a;
+      --text: #e8eaf0;
+      --muted: #7a7f94;
+      --accent: #6366f1;
+      --success: #22c55e;
+      --danger: #ef4444;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      gap: 0;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), #818cf8);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      border: 1px solid;
+      transition: all 0.3s;
+    }
+    .status-badge.connecting {
+      color: var(--muted);
+      border-color: var(--border);
+      background: transparent;
+    }
+    .status-badge.ready {
+      color: var(--accent);
+      border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+    .status-badge.paired {
+      color: var(--success);
+      border-color: color-mix(in srgb, var(--success) 30%, transparent);
+      background: color-mix(in srgb, var(--success) 10%, transparent);
+    }
+    .status-badge.error {
+      color: var(--danger);
+      border-color: color-mix(in srgb, var(--danger) 30%, transparent);
+      background: color-mix(in srgb, var(--danger) 10%, transparent);
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .dot.pulse {
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .info-block {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+    .info-label { color: var(--muted); }
+    .info-value {
+      color: var(--text);
+      font-family: ui-monospace, monospace;
+      font-size: 0.8rem;
+      text-align: right;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+      display: none;
+    }
+    .btn:hover { opacity: 0.88; }
+    .btn.visible { display: block; }
+
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--success) 15%, transparent);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-icon.visible { display: flex; }
+
+    .peer-id-hint {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="white" width="20" height="20">
+          <path d="M17 1.01 7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
+        </svg>
+      </div>
+      <span class="logo-name">Srcpy Pair</span>
+    </div>
+
+    <div id="statusBadge" class="status-badge connecting">
+      <div class="dot pulse"></div>
+      <span id="statusText">Підключення...</span>
+    </div>
+
+    <div id="successIcon" class="success-icon">
+      <svg viewBox="0 0 24 24" fill="#22c55e" width="28" height="28">
+        <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+      </svg>
+    </div>
+
+    <div class="info-block" id="infoBlock">
+      <div class="info-row">
+        <span class="info-label">Peer ID</span>
+        <span class="info-value" id="peerIdVal">—</span>
+      </div>
+      <div class="info-row" id="ipRow" style="display:none">
+        <span class="info-label">LAN IP</span>
+        <span class="info-value" id="ipVal">—</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <p class="desc" id="descText">
+      Визначаємо локальний IP та встановлюємо з'єднання з Srcpy...
+    </p>
+
+    <button id="retryBtn" class="btn" onclick="location.reload()">Спробувати знову</button>
+
+    <p class="peer-id-hint" id="peerHint"></p>
+  </div>
+
+  <script>
+    // ── helpers ─────────────────────────────────────────────────────────────
+    function setPeerId(id) {
+      document.getElementById('peerIdVal').textContent = id || '—'
+    }
+    function setStatus(state, text) {
+      const badge = document.getElementById('statusBadge')
+      const dot = badge.querySelector('.dot')
+      badge.className = 'status-badge ' + state
+      document.getElementById('statusText').textContent = text
+      dot.className = 'dot' + (state === 'connecting' || state === 'ready' ? ' pulse' : '')
+    }
+    function setDesc(text) {
+      document.getElementById('descText').textContent = text
+    }
+    function showRetry() {
+      document.getElementById('retryBtn').classList.add('visible')
+    }
+    function showSuccess() {
+      document.getElementById('successIcon').classList.add('visible')
+    }
+    function showIp(ip) {
+      document.getElementById('ipRow').style.display = 'flex'
+      document.getElementById('ipVal').textContent = ip
+    }
+
+    // ── get local LAN IP via WebRTC ─────────────────────────────────────────
+    function getLocalIp() {
+      return new Promise((resolve) => {
+        const ips = new Set()
+        const pc = new RTCPeerConnection({ iceServers: [] })
+        pc.createDataChannel('')
+        pc.createOffer().then(o => pc.setLocalDescription(o))
+        pc.onicecandidate = e => {
+          if (!e.candidate) {
+            pc.close()
+            // pick first private IP
+            const private_ip = [...ips].find(ip =>
+              /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(ip)
+            ) || [...ips][0]
+            resolve(private_ip || null)
+            return
+          }
+          const m = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate)
+          if (m) ips.add(m[1])
+        }
+        // fallback timeout
+        setTimeout(() => { pc.close(); resolve([...ips][0] || null) }, 3000)
+      })
+    }
+
+    // ── main ────────────────────────────────────────────────────────────────
+    async function main() {
+      // peer ID comes from URL: /peerid or ?p=peerid
+      const path = location.pathname.replace(/^\//, '').replace(/\/$/, '')
+      const segments = path.split('/')
+      const hostPeerId = segments[segments.length - 1] ||
+                         new URLSearchParams(location.search).get('p')
+
+      if (!hostPeerId) {
+        setStatus('error', 'Помилка')
+        setDesc('Невірне посилання — peer ID відсутній у URL.')
+        document.getElementById('peerHint').textContent = 'Відскануйте QR-код знову'
+        showRetry()
+        return
+      }
+
+      document.getElementById('peerHint').textContent = '→ ' + hostPeerId.slice(0, 16) + '...'
+
+      // get local IP
+      setDesc('Визначаємо локальний IP пристрою...')
+      const localIp = await getLocalIp()
+      if (localIp) showIp(localIp)
+
+      // create our own peer (no ID needed, just for outbound conn)
+      setDesc('Підключаємося до Srcpy...')
+      const peer = new Peer(undefined, {
+        debug: 0
+      })
+
+      peer.on('open', (myId) => {
+        setPeerId(myId)
+        setStatus('ready', 'З\'єднання...')
+
+        const conn = peer.connect(hostPeerId, { reliable: true })
+
+        conn.on('open', () => {
+          setStatus('paired', 'Підключено')
+          setDesc('Передаємо дані пристрою...')
+
+          const payload = {
+            type: 'device_info',
+            ip: localIp || '',
+            port: 5555,
+          }
+          conn.send(JSON.stringify(payload))
+
+          setTimeout(() => {
+            setDesc('Готово! Srcpy підключається до пристрою.')
+            showSuccess()
+            document.getElementById('infoBlock').style.display = 'none'
+          }, 800)
+        })
+
+        conn.on('error', (err) => {
+          setStatus('error', 'Помилка з\'єднання')
+          setDesc('Не вдалося підключитись: ' + err.message)
+          showRetry()
+        })
+      })
+
+      peer.on('error', (err) => {
+        setStatus('error', 'Помилка PeerJS')
+        setDesc(err.message || 'Не вдалося ініціалізувати peer.')
+        showRetry()
+      })
+
+      // timeout if no connection
+      setTimeout(() => {
+        if (document.getElementById('statusBadge').classList.contains('paired')) return
+        setStatus('error', 'Таймаут')
+        setDesc('Не вдалося з\'єднатись за 20 секунд. Переконайтеся що Srcpy запущено.')
+        showRetry()
+        peer.destroy()
+      }, 20000)
+    }
+
+    main()
+  </script>
+</body>
+</html>
