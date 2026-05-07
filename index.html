@@ -295,15 +295,22 @@
 
       document.getElementById('peerHint').textContent = '→ ' + hostPeerId.slice(0, 16) + '...'
 
-      // get local IP
-      setDesc('Визначаємо локальний IP пристрою...')
-      const localIp = await getLocalIp()
-      if (localIp) showIp(localIp)
-
-      // create our own peer (no ID needed, just for outbound conn)
+      // start IP detection immediately in background
       setDesc('Підключаємося до Srcpy...')
+      let localIp = null
+      const ipPromise = getLocalIp().then(ip => {
+        localIp = ip
+        if (ip) showIp(ip)
+      })
       const peer = new Peer(undefined, {
-        debug: 0
+        debug: 0,
+        config: {
+          iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+          ],
+          iceTransportPolicy: 'all',
+        }
       })
 
       peer.on('open', (myId) => {
@@ -312,9 +319,14 @@
 
         const conn = peer.connect(hostPeerId, { reliable: true })
 
-        conn.on('open', () => {
+        conn.on('open', async () => {
           setStatus('paired', 'Підключено')
           setDesc('Передаємо дані пристрою...')
+
+          // wait for IP if still resolving (max 2s extra)
+          if (!localIp) {
+            await Promise.race([ipPromise, new Promise(r => setTimeout(r, 2000))])
+          }
 
           const payload = {
             type: 'device_info',
