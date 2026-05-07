@@ -302,15 +302,27 @@
         localIp = ip
         if (ip) showIp(ip)
       })
+
+      const fallbackIceServers = [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+        { urls: 'stun:global.stun.twilio.com:3478' },
+      ]
+      let iceServers = fallbackIceServers
+      try {
+        const turnRes = await fetch('https://fulldroper.metered.live/api/v1/turn/credentials?apiKey=84c2ac4f108b58ec5e2f01d93134afd08347')
+        const turn = await turnRes.json()
+        if (Array.isArray(turn) && turn.length) iceServers = [...turn, ...fallbackIceServers]
+      } catch (e) {
+        console.warn('TURN unavailable:', e.message)
+      }
+
       const peer = new Peer(undefined, {
         debug: 0,
-        config: {
-          iceServers: [
-            { urls: 'stun:stun.l.google.com:19302' },
-            { urls: 'stun:stun1.l.google.com:19302' },
-          ],
-          iceTransportPolicy: 'all',
-        }
+        config: { iceServers, iceTransportPolicy: 'all' }
       })
 
       peer.on('open', (myId) => {
