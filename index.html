@@ -29,7 +29,6 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      gap: 0;
     }
 
     .card {
@@ -42,7 +41,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 20px;
+      gap: 18px;
     }
 
     .logo {
@@ -51,136 +50,82 @@
       gap: 10px;
     }
     .logo-icon {
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       background: linear-gradient(135deg, var(--accent), #818cf8);
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
     }
-    .logo-name {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
+    .logo-name { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
 
     .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      border: 1px solid;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 500; border: 1px solid;
       transition: all 0.3s;
     }
-    .status-badge.connecting {
-      color: var(--muted);
-      border-color: var(--border);
-      background: transparent;
-    }
-    .status-badge.ready {
-      color: var(--accent);
-      border-color: color-mix(in srgb, var(--accent) 30%, transparent);
-      background: color-mix(in srgb, var(--accent) 10%, transparent);
-    }
-    .status-badge.paired {
-      color: var(--success);
-      border-color: color-mix(in srgb, var(--success) 30%, transparent);
-      background: color-mix(in srgb, var(--success) 10%, transparent);
-    }
-    .status-badge.error {
-      color: var(--danger);
-      border-color: color-mix(in srgb, var(--danger) 30%, transparent);
-      background: color-mix(in srgb, var(--danger) 10%, transparent);
-    }
+    .status-badge.connecting { color: var(--muted); border-color: var(--border); background: transparent; }
+    .status-badge.ready     { color: var(--accent); border-color: color-mix(in srgb,var(--accent) 30%,transparent); background: color-mix(in srgb,var(--accent) 10%,transparent); }
+    .status-badge.paired    { color: var(--success); border-color: color-mix(in srgb,var(--success) 30%,transparent); background: color-mix(in srgb,var(--success) 10%,transparent); }
+    .status-badge.error     { color: var(--danger); border-color: color-mix(in srgb,var(--danger) 30%,transparent); background: color-mix(in srgb,var(--danger) 10%,transparent); }
 
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: currentColor;
-    }
-    .dot.pulse {
-      animation: pulse 1.4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
-    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .dot.pulse { animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    .info-block {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .divider { width: 100%; height: 1px; background: var(--border); }
 
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.82rem;
-    }
-    .info-label { color: var(--muted); }
-    .info-value {
+    .desc { font-size: 0.8rem; color: var(--muted); text-align: center; line-height: 1.5; }
+
+    /* IP manual input */
+    .ip-form { display: none; flex-direction: column; gap: 10px; width: 100%; }
+    .ip-form.visible { display: flex; }
+    .ip-form label { font-size: 0.75rem; color: var(--muted); }
+    .ip-form input {
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
       color: var(--text);
+      font-size: 0.9rem;
       font-family: ui-monospace, monospace;
-      font-size: 0.8rem;
-      text-align: right;
-      max-width: 200px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .divider {
+      outline: none;
+      transition: border-color 0.15s;
       width: 100%;
-      height: 1px;
-      background: var(--border);
     }
-
-    .desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-align: center;
-      line-height: 1.5;
-    }
+    .ip-form input:focus { border-color: var(--accent); }
+    .ip-form input::placeholder { color: var(--muted); opacity: 0.6; }
 
     .btn {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s;
+      width: 100%; padding: 10px;
+      border-radius: 8px; border: none;
+      background: var(--accent); color: #fff;
+      font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: opacity 0.15s;
       display: none;
     }
     .btn:hover { opacity: 0.88; }
     .btn.visible { display: block; }
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
 
     .success-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: color-mix(in srgb, var(--success) 15%, transparent);
-      display: none;
-      align-items: center;
-      justify-content: center;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: color-mix(in srgb,var(--success) 15%,transparent);
+      display: none; align-items: center; justify-content: center;
     }
     .success-icon.visible { display: flex; }
 
-    .peer-id-hint {
-      font-size: 0.72rem;
-      color: var(--muted);
-      text-align: center;
-      opacity: 0.6;
+    .info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.82rem; width: 100%;
+    }
+    .info-label { color: var(--muted); }
+    .info-value {
+      color: var(--text); font-family: ui-monospace, monospace;
+      font-size: 0.8rem; text-align: right;
     }
   </style>
 </head>
@@ -206,55 +151,35 @@
       </svg>
     </div>
 
-    <div class="info-block" id="infoBlock">
-      <div class="info-row">
-        <span class="info-label">Peer ID</span>
-        <span class="info-value" id="peerIdVal">—</span>
-      </div>
-      <div class="info-row" id="ipRow" style="display:none">
-        <span class="info-label">LAN IP</span>
-        <span class="info-value" id="ipVal">—</span>
-      </div>
+    <p class="desc" id="descText">Визначаємо локальний IP та встановлюємо з'єднання...</p>
+
+    <!-- Manual IP + port input — shown if WebRTC fails to detect IP -->
+    <div class="ip-form" id="ipForm">
+      <label for="ipInput">IP-адреса цього пристрою в локальній мережі</label>
+      <input id="ipInput" type="text" inputmode="decimal" placeholder="192.168.1.x" autocomplete="off" />
+      <label for="portInput">Порт ADB (з розділу «Бездротове налагодження»)</label>
+      <input id="portInput" type="text" inputmode="numeric" placeholder="5555" autocomplete="off" value="5555" />
     </div>
 
     <div class="divider"></div>
 
-    <p class="desc" id="descText">
-      Визначаємо локальний IP та встановлюємо з'єднання з Srcpy...
-    </p>
-
-    <button id="retryBtn" class="btn" onclick="location.reload()">Спробувати знову</button>
-
-    <p class="peer-id-hint" id="peerHint"></p>
+    <button id="sendBtn" class="btn" onclick="sendWithManualIp()">Підключити</button>
+    <button id="retryBtn" class="btn secondary" onclick="location.reload()">Спробувати знову</button>
   </div>
 
   <script>
-    // ── helpers ─────────────────────────────────────────────────────────────
-    function setPeerId(id) {
-      document.getElementById('peerIdVal').textContent = id || '—'
-    }
+    // ── helpers ──────────────────────────────────────────────────────────────
     function setStatus(state, text) {
       const badge = document.getElementById('statusBadge')
-      const dot = badge.querySelector('.dot')
       badge.className = 'status-badge ' + state
+      badge.querySelector('.dot').className = 'dot' + (['connecting','ready'].includes(state) ? ' pulse' : '')
       document.getElementById('statusText').textContent = text
-      dot.className = 'dot' + (state === 'connecting' || state === 'ready' ? ' pulse' : '')
     }
-    function setDesc(text) {
-      document.getElementById('descText').textContent = text
-    }
-    function showRetry() {
-      document.getElementById('retryBtn').classList.add('visible')
-    }
-    function showSuccess() {
-      document.getElementById('successIcon').classList.add('visible')
-    }
-    function showIp(ip) {
-      document.getElementById('ipRow').style.display = 'flex'
-      document.getElementById('ipVal').textContent = ip
-    }
+    function setDesc(text) { document.getElementById('descText').textContent = text }
+    function show(id) { document.getElementById(id).classList.add('visible') }
+    function showIpForm() { document.getElementById('ipForm').classList.add('visible') }
 
-    // ── get local LAN IP via WebRTC ─────────────────────────────────────────
+    // ── get local LAN IP via WebRTC ICE ──────────────────────────────────────
     function getLocalIp() {
       return new Promise((resolve) => {
         const ips = new Set()
@@ -264,46 +189,56 @@
         pc.onicecandidate = e => {
           if (!e.candidate) {
             pc.close()
-            // pick first private IP
-            const private_ip = [...ips].find(ip =>
-              /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(ip)
-            ) || [...ips][0]
-            resolve(private_ip || null)
+            const lan = [...ips].find(ip => /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(ip))
+            resolve(lan || [...ips][0] || null)
             return
           }
           const m = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate)
           if (m) ips.add(m[1])
         }
-        // fallback timeout
-        setTimeout(() => { pc.close(); resolve([...ips][0] || null) }, 3000)
+        setTimeout(() => { pc.close(); const lan = [...ips].find(ip => /^(10\.|172\.(1[6-9]|2\d|3[01])\.|192\.168\.)/.test(ip)); resolve(lan || [...ips][0] || null) }, 4000)
       })
     }
 
-    // ── main ────────────────────────────────────────────────────────────────
+    // ── state ─────────────────────────────────────────────────────────────────
+    let activeConn = null
+    let resolvedIp = null
+
+    function sendPayload(ip, port) {
+      if (!activeConn) return
+      activeConn.send(JSON.stringify({ type: 'device_info', ip, port }))
+      setStatus('paired', 'Підключено')
+      setDesc('Готово! Srcpy підключається до пристрою.')
+      show('successIcon')
+      document.getElementById('ipForm').style.display = 'none'
+      document.getElementById('sendBtn').style.display = 'none'
+      document.getElementById('descText').style.display = 'none'
+    }
+
+    function sendWithManualIp() {
+      const ip = document.getElementById('ipInput').value.trim()
+      const port = parseInt(document.getElementById('portInput').value.trim()) || 5555
+      if (!ip) return
+      sendPayload(ip, port)
+    }
+
+    // ── main ──────────────────────────────────────────────────────────────────
     async function main() {
-      // peer ID comes from hash: https://site.com#peerid
       const hostPeerId = location.hash.replace(/^#/, '') ||
                          new URLSearchParams(location.search).get('p')
 
       if (!hostPeerId) {
         setStatus('error', 'Помилка')
-        setDesc('Невірне посилання — peer ID відсутній у URL.')
-        document.getElementById('peerHint').textContent = 'Відскануйте QR-код знову'
-        showRetry()
+        setDesc('Невірне посилання — peer ID відсутній у URL. Відскануйте QR-код знову.')
+        show('retryBtn')
         return
       }
 
-      document.getElementById('peerHint').textContent = '→ ' + hostPeerId.slice(0, 16) + '...'
+      // start IP detection in background
+      const ipPromise = getLocalIp().then(ip => { resolvedIp = ip })
 
-      // start IP detection immediately in background
-      setDesc('Підключаємося до Srcpy...')
-      let localIp = null
-      const ipPromise = getLocalIp().then(ip => {
-        localIp = ip
-        if (ip) showIp(ip)
-      })
-
-      const fallbackIceServers = [
+      // fetch TURN credentials + init peer in parallel
+      const fallback = [
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' },
         { urls: 'stun:stun2.l.google.com:19302' },
@@ -311,14 +246,12 @@
         { urls: 'stun:stun4.l.google.com:19302' },
         { urls: 'stun:global.stun.twilio.com:3478' },
       ]
-      let iceServers = fallbackIceServers
+      let iceServers = fallback
       try {
-        const turnRes = await fetch('https://fulldroper.metered.live/api/v1/turn/credentials?apiKey=84c2ac4f108b58ec5e2f01d93134afd08347')
-        const turn = await turnRes.json()
-        if (Array.isArray(turn) && turn.length) iceServers = [...turn, ...fallbackIceServers]
-      } catch (e) {
-        console.warn('TURN unavailable:', e.message)
-      }
+        const r = await fetch('https://fulldroper.metered.live/api/v1/turn/credentials?apiKey=84c2ac4f108b58ec5e2f01d93134afd08347')
+        const turn = await r.json()
+        if (Array.isArray(turn) && turn.length) iceServers = [...turn, ...fallback]
+      } catch (e) { console.warn('TURN unavailable:', e.message) }
 
       const peer = new Peer(undefined, {
         debug: 0,
@@ -326,55 +259,55 @@
       })
 
       peer.on('open', (myId) => {
-        setPeerId(myId)
         setStatus('ready', 'З\'єднання...')
-
         const conn = peer.connect(hostPeerId, { reliable: true })
+        activeConn = conn
 
         conn.on('open', async () => {
-          setStatus('paired', 'Підключено')
-          setDesc('Передаємо дані пристрою...')
+          setStatus('ready', 'Визначаємо IP...')
+          setDesc('З\'єднання встановлено. Визначаємо IP пристрою...')
 
-          // wait for IP if still resolving (max 2s extra)
-          if (!localIp) {
-            await Promise.race([ipPromise, new Promise(r => setTimeout(r, 2000))])
+          // wait for WebRTC IP (max 4s — same as ICE timeout)
+          await Promise.race([ipPromise, new Promise(r => setTimeout(r, 4500))])
+
+          if (resolvedIp) {
+            // auto-detected IP — still ask for port since we can't detect it
+            document.getElementById('ipInput').value = resolvedIp
+            setStatus('ready', 'Перевірте порт')
+            setDesc('IP визначено автоматично. Перевірте порт ADB і натисніть «Підключити».')
+            showIpForm()
+            show('sendBtn')
+            document.getElementById('portInput').focus()
+          } else {
+            // WebRTC could not detect IP — ask user
+            setStatus('ready', 'Введіть IP та порт')
+            setDesc('Не вдалось визначити IP. Введіть IP та порт з розділу «Бездротове налагодження».')
+            showIpForm()
+            show('sendBtn')
+            document.getElementById('ipInput').focus()
           }
-
-          const payload = {
-            type: 'device_info',
-            ip: localIp || '',
-            port: 5555,
-          }
-          conn.send(JSON.stringify(payload))
-
-          setTimeout(() => {
-            setDesc('Готово! Srcpy підключається до пристрою.')
-            showSuccess()
-            document.getElementById('infoBlock').style.display = 'none'
-          }, 800)
         })
 
-        conn.on('error', (err) => {
+        conn.on('error', err => {
           setStatus('error', 'Помилка з\'єднання')
-          setDesc('Не вдалося підключитись: ' + err.message)
-          showRetry()
+          setDesc(err.message || String(err))
+          show('retryBtn')
         })
       })
 
-      peer.on('error', (err) => {
+      peer.on('error', err => {
         setStatus('error', 'Помилка PeerJS')
-        setDesc(err.message || 'Не вдалося ініціалізувати peer.')
-        showRetry()
+        setDesc(err.message || String(err))
+        show('retryBtn')
       })
 
-      // timeout if no connection
       setTimeout(() => {
         if (document.getElementById('statusBadge').classList.contains('paired')) return
         setStatus('error', 'Таймаут')
-        setDesc('Не вдалося з\'єднатись за 20 секунд. Переконайтеся що Srcpy запущено.')
-        showRetry()
+        setDesc('Не вдалося з\'єднатись за 25 секунд. Переконайтеся що Srcpy запущено.')
+        show('retryBtn')
         peer.destroy()
-      }, 20000)
+      }, 25000)
     }
 
     main()
